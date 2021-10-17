@@ -66,7 +66,7 @@ export class Sntl {
 
     if (fields) {
       Object.keys(fields).forEach(k => {
-        message = message.replace(new RegExp(`{{${k}}}`), fields[k])
+        message = message.replace(new RegExp(`{{\\s*${k}\\s*}}`), fields[k])
       })
     }
 
