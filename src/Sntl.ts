@@ -53,7 +53,23 @@ export class Sntl {
     return this
   }
 
-  static formatMessage(key: string, fields?: any): { message: string } {
+  static list(key: string, fields?: any) {
+    const list = Sntl.locales
+      .get(Sntl._tempLocale || Sntl._defaultLocale)
+      .get(key)
+
+    if (fields) {
+      Object.keys(fields).forEach(k => {
+        Object.keys(list).forEach(l => {
+          list[l] = list[l].replace(new RegExp(`{{\\s*${k}\\s*}}`), fields[k])
+        })
+      })
+    }
+
+    return list
+  }
+
+  static formatMessage(key: string, fields?: any): string {
     const splitedKey = key.split('.')
 
     const keys = Sntl.locales
@@ -72,6 +88,6 @@ export class Sntl {
 
     Sntl._tempLocale = null
 
-    return { message }
+    return message
   }
 }

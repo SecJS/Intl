@@ -59,22 +59,29 @@ import { Sntl } from '@secjs/intl'
 await new Sntl.setDefaultLocale('en-us').load()
 
 Sntl.formatMessage('messages.greeting', { name: 'João' }) 
-// { message: 'Hello!, my name is João!' }
+// 'Hello!, my name is João!'
 
 // Use forLocale to call for a specific locale in runtime
 Sntl.forLocale('pt-br').formatMessage('messages.greeting', { 
   name: 'João',
-}) // { message: 'Olá!, meu nome é João!' }
+}) // 'Olá!, meu nome é João!'
 
 Sntl.forLocale('en-us').formatMessage('messages.greeting', { 
   name: 'João',
-}) // { message: 'Hello!, my name is João!' }
+}) // 'Hello!, my name is João!'
 
 // Use changeLocale to change the defaultLocale in runtime
 Sntl.changeLocale('pt-br').formatMessage('messages.greeting', { 
   name: 'João',
 }) 
-// { message: 'Olá!, meu nome é João!' }
+// 'Olá!, meu nome é João!'
+
+Sntl.forLocale('en-us').formatMessage('messages.greeting', {
+  name: 'João',
+}) // 'Hello!, my name is João!'
+
+// Use list to get all keys inside the json file
+Sntl.list('stub', { name: 'João' }) // { test: 'Hello!, my name is João!' }
 ```
 
 ---
