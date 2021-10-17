@@ -31,10 +31,9 @@ npm install @secjs/intl
 
 ### Sntl 
 
-> Format messages using json files inside resources/locales folder
-
-> Is extremely important to create the folder resources/locales in the project root, 
-> and inside you need to create the folders for each language, example: resources/locales/en-us.
+> Format messages using json files inside resources/locales folder. Is extremely important to create 
+> the folder resources/locales in the project root, and inside you need to create the folders for 
+> each language, example: resources/locales/en-us.
 
 > resources/locales/en-us/messages.json
 ```json
@@ -42,6 +41,7 @@ npm install @secjs/intl
   "greeting": "Hello!, my name is {{name}}!"
 }
 ```
+
 > resources/locales/pt-br/messages.json
 ```json
 {
@@ -55,17 +55,26 @@ import { Sntl } from '@secjs/intl'
 // First set the defaultLocale and call load, 
 // to get all files inside resources folder.
 
-// Now you can call Sntl anyware and use as you want.
+// Now you can call Sntl anywhere and use as you want.
 await new Sntl.setDefaultLocale('en-us').load()
 
-Sntl.formatMessage('messages.greeting', { name: 'João' }) // { message: 'Hello!, my name is João!' }
+Sntl.formatMessage('messages.greeting', { name: 'João' }) 
+// { message: 'Hello!, my name is João!' }
 
 // Use forLocale to call for a specific locale in runtime
-Sntl.forLocale('pt-br').formatMessage('messages.greeting', { name: 'João' }) // { message: 'Olá!, meu nome é João!' }
-Sntl.forLocale('en-us').formatMessage('messages.greeting', { name: 'João' }) // { message: 'Hello!, my name is João!' }
+Sntl.forLocale('pt-br').formatMessage('messages.greeting', { 
+  name: 'João',
+}) // { message: 'Olá!, meu nome é João!' }
+
+Sntl.forLocale('en-us').formatMessage('messages.greeting', { 
+  name: 'João',
+}) // { message: 'Hello!, my name is João!' }
 
 // Use changeLocale to change the defaultLocale in runtime
-Sntl.changeLocale('pt-br').formatMessage('messages.greeting', { name: 'João' }) // { message: 'Olá!, meu nome é João!' }
+Sntl.changeLocale('pt-br').formatMessage('messages.greeting', { 
+  name: 'João',
+}) 
+// { message: 'Olá!, meu nome é João!' }
 ```
 
 ---
