@@ -1,5 +1,6 @@
 import { parse } from 'path'
 import { getFolders } from '@secjs/utils'
+import { getFoldersSync } from './utils/getFoldersSync'
 import { NotImplementedException } from '@secjs/exceptions'
 
 export class Sntl {
@@ -7,10 +8,36 @@ export class Sntl {
   private static _defaultLocale: string
   private static locales: Map<string, Map<string, any>> = new Map()
 
+  constructor() {
+    Sntl.locales.clear()
+    Sntl._tempLocale = null
+    Sntl._defaultLocale = null
+  }
+
   async load() {
     const path = `${process.cwd()}/resources/locales`
 
     const { folders } = await getFolders(path, true)
+
+    folders.forEach(folder => {
+      const filesMap = new Map()
+
+      folder.files.forEach(file => {
+        if (typeof file.value !== 'string') return
+
+        filesMap.set(parse(file.name).name, JSON.parse(file.value))
+      })
+
+      Sntl.locales.set(folder.path, filesMap)
+    })
+
+    return this
+  }
+
+  loadSync() {
+    const path = `${process.cwd()}/resources/locales`
+
+    const { folders } = getFoldersSync(path, true)
 
     folders.forEach(folder => {
       const filesMap = new Map()

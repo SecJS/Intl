@@ -44,4 +44,12 @@ describe('\n Sntl', () => {
       test: 'Hello my name is {{name}}!',
     })
   })
+
+  it('should be able to reload Sntl locales and load it sync', async () => {
+    new Sntl().setDefaultLocale('en-us').loadSync()
+
+    const message = Sntl.formatMessage('stub.test', { name: 'João' })
+
+    expect(message).toBe('Hello my name is João!')
+  })
 })
