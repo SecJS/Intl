@@ -1,6 +1,6 @@
 {
   "name": "@secjs/intl",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "license": "MIT",
   "author": "João Lenon",
@@ -17,7 +17,7 @@
     "@secjs/contracts": "1.1.6",
     "@secjs/exceptions": "1.0.3",
     "@secjs/logger": "1.2.2",
-    "@secjs/utils": "1.4.5",
+    "@secjs/utils": "1.4.6",
     "@types/debug": "4.1.7",
     "@types/jest": "27.0.1",
     "@typescript-eslint/eslint-plugin": "4.31.0",
