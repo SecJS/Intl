@@ -1,5 +1,5 @@
 import { Folder, Path } from '@secjs/utils'
-import { NotFoundException, NotImplementedException } from "@secjs/exceptions";
+import { NotFoundException, NotImplementedException } from '@secjs/exceptions'
 
 export class Sntl {
   private static _tempLocale: string
@@ -13,7 +13,7 @@ export class Sntl {
   }
 
   async load() {
-    const path = Path.locales()
+    const path = Path.noBuild().locales()
 
     const { folders } = await new Folder(path).load({ withFileContent: true })
 
@@ -31,7 +31,7 @@ export class Sntl {
   }
 
   loadSync() {
-    const path = Path.locales()
+    const path = Path.noBuild().locales()
 
     const { folders } = new Folder(path).loadSync({ withFileContent: true })
 
