@@ -1,7 +1,5 @@
-import { parse } from 'path'
-import { getFolders } from '@secjs/utils'
-import { getFoldersSync } from './utils/getFoldersSync'
-import { NotImplementedException } from '@secjs/exceptions'
+import { Folder, Path } from '@secjs/utils'
+import { NotFoundException, NotImplementedException } from "@secjs/exceptions";
 
 export class Sntl {
   private static _tempLocale: string
@@ -15,40 +13,36 @@ export class Sntl {
   }
 
   async load() {
-    const path = `${process.cwd()}/resources/locales`
+    const path = Path.locales()
 
-    const { folders } = await getFolders(path, true)
+    const { folders } = await new Folder(path).load({ withFileContent: true })
 
     folders.forEach(folder => {
       const filesMap = new Map()
 
-      folder.files.forEach(file => {
-        if (typeof file.value !== 'string') return
-
-        filesMap.set(parse(file.name).name, JSON.parse(file.value))
+      folder.files.forEach(f => {
+        filesMap.set(f.name, JSON.parse(f.content.toString()))
       })
 
-      Sntl.locales.set(folder.path, filesMap)
+      Sntl.locales.set(folder.name, filesMap)
     })
 
     return this
   }
 
   loadSync() {
-    const path = `${process.cwd()}/resources/locales`
+    const path = Path.locales()
 
-    const { folders } = getFoldersSync(path, true)
+    const { folders } = new Folder(path).loadSync({ withFileContent: true })
 
     folders.forEach(folder => {
       const filesMap = new Map()
 
-      folder.files.forEach(file => {
-        if (typeof file.value !== 'string') return
-
-        filesMap.set(parse(file.name).name, JSON.parse(file.value))
+      folder.files.forEach(f => {
+        filesMap.set(f.name, JSON.parse(f.content.toString()))
       })
 
-      Sntl.locales.set(folder.path, filesMap)
+      Sntl.locales.set(folder.name, filesMap)
     })
 
     return this
@@ -81,9 +75,21 @@ export class Sntl {
   }
 
   static list(key: string, fields?: any) {
-    const list = Sntl.locales
-      .get(Sntl._tempLocale || Sntl._defaultLocale)
-      .get(key)
+    const locale = Sntl.locales.get(Sntl._tempLocale || Sntl._defaultLocale)
+
+    if (!locale) {
+      throw new NotFoundException(
+        `Locale ${Sntl._tempLocale || Sntl._defaultLocale} not found`,
+      )
+    }
+
+    const list = locale.get(key)
+
+    if (!list) {
+      throw new NotFoundException(
+        `Key ${key} not found in ${Sntl._tempLocale || Sntl._defaultLocale}`,
+      )
+    }
 
     if (fields) {
       Object.keys(fields).forEach(k => {
@@ -99,13 +105,35 @@ export class Sntl {
   static formatMessage(key: string, fields?: any): string {
     const splitedKey = key.split('.')
 
-    const keys = Sntl.locales
-      .get(Sntl._tempLocale || Sntl._defaultLocale)
-      .get(splitedKey[0])
+    const locale = Sntl.locales.get(Sntl._tempLocale || Sntl._defaultLocale)
+
+    if (!locale) {
+      throw new NotFoundException(
+        `Locale ${Sntl._tempLocale || Sntl._defaultLocale} not found`,
+      )
+    }
+
+    const keys = locale.get(splitedKey[0])
+
+    if (!keys) {
+      throw new NotFoundException(
+        `File ${splitedKey[0]} not found in locale ${
+          Sntl._tempLocale || Sntl._defaultLocale
+        }`,
+      )
+    }
 
     splitedKey.shift()
 
     let message: string = keys[splitedKey.join('.')]
+
+    if (!message) {
+      throw new NotFoundException(
+        `Key ${splitedKey.join('.')} not found in locale ${
+          Sntl._tempLocale || Sntl._defaultLocale
+        }`,
+      )
+    }
 
     if (fields) {
       Object.keys(fields).forEach(k => {

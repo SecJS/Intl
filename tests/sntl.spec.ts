@@ -52,4 +52,30 @@ describe('\n Sntl', () => {
 
     expect(message).toBe('Hello my name is João!')
   })
+
+  it('should throw errors when cant found the locale', async () => {
+    new Sntl().setDefaultLocale('pt-pt').loadSync()
+
+    try {
+      Sntl.formatMessage('stub.test', { name: 'João' })
+    } catch (error) {
+      expect(error.name).toBe('NotFoundException')
+      expect(error.status).toBe(404)
+      expect(error.content).toBe('Locale pt-pt not found')
+      expect(error.isSecJsException).toBe(true)
+    }
+  })
+
+  it('should throw errors when cant found the key from locale', async () => {
+    new Sntl().setDefaultLocale('en-us').loadSync()
+
+    try {
+      Sntl.formatMessage('stub.nonexistent', { name: 'João' })
+    } catch (error) {
+      expect(error.name).toBe('NotFoundException')
+      expect(error.status).toBe(404)
+      expect(error.content).toBe('Key nonexistent not found in locale en-us')
+      expect(error.isSecJsException).toBe(true)
+    }
+  })
 })
